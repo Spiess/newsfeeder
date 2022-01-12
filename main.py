@@ -2,6 +2,7 @@ import argparse
 import csv
 import logging
 import sqlite3
+import threading
 import time
 
 import feedparser
@@ -12,7 +13,7 @@ ARTICLE = 'article'
 
 
 def main():
-    database_path, feeds_file = parse_arguments()
+    database_path, feeds_file, update_interval = parse_arguments()
     logging.info(f'Database path set to: "{database_path}"')
 
     db_con = sqlite3.connect(database_path)
@@ -22,7 +23,25 @@ def main():
     feeds = initialize_feeds(db_con, feeds_file)
     logging.info(f'Monitoring sites: {list(feeds.keys())}')
 
-    update_feeds(db_con, feeds)
+    stop_event = threading.Event()
+    update_thread = threading.Thread(target=update_feeds_loop, args=(database_path, feeds, update_interval, stop_event))
+
+    logging.info('Starting update thread.')
+    update_thread.start()
+
+    while not stop_event.is_set():
+        text = input('> Type "q" or "exit" to quit.\n')
+        if text == 'q' or text == 'exit':
+            stop_event.set()
+
+
+def update_feeds_loop(db_path, feeds, interval: float, stop_event: threading.Event):
+    db_connection = sqlite3.connect(db_path)
+
+    while not stop_event.is_set():
+        logging.info('Updating feeds.')
+        update_feeds(db_connection, feeds)
+        stop_event.wait(interval)
 
 
 def parse_arguments():
@@ -31,6 +50,8 @@ def parse_arguments():
     parser.add_argument('-d', '--database-path', help='Path to the database file.', type=str, default='articles.db')
     parser.add_argument('-l', '--log-level', help='Log level for logging messages.', type=str, default='INFO',
                         choices=['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG'])
+    parser.add_argument('-i', '--update-interval', help='Interval between checking for news feed updates in seconds.',
+                        type=float, default=60 * 60)
     parser.add_argument('feeds', help='CSV file containing on each line the feed name and feed URL.')
 
     args = parser.parse_args()
@@ -39,7 +60,7 @@ def parse_arguments():
     logging.basicConfig(level=loglevel, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info(f'Set log level to: {logging.getLevelName(loglevel)}')
 
-    return args.database_path, args.feeds
+    return args.database_path, args.feeds, args.update_interval
 
 
 def create_tables(db_connection):
