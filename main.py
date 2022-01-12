@@ -207,8 +207,10 @@ def update_feed(cursor, name, site_id):
         title = article.title
         link = article.title
         summary = article.summary
-        if article.published_parsed is not None:
-            published = int(time.mktime(article.published_parsed))
+
+        date = article.published_parsed if 'published_parsed' in article else article.modified_parsed
+        if date is not None:
+            published = int(time.mktime(date))
         else:
             logging.warning(f'No parsed date in "{name}" article "{title}".')
             published = int(time.mktime(dateparser.parse(article.published).timetuple()))
