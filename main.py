@@ -1,6 +1,7 @@
 import argparse
 import csv
 import logging
+import re
 import sqlite3
 import threading
 import time
@@ -10,6 +11,8 @@ from dateutil import parser as dateparser
 
 SITE = 'site'
 ARTICLE = 'article'
+
+IMAGE_URL_REGEX = re.compile(r'"(https?://[^"]*\.(?:png|jpg))"', re.IGNORECASE)
 
 
 def main():
@@ -79,7 +82,8 @@ def create_tables(db_connection):
                        'summary TEXT, '
                        'link TEXT, '
                        'thumbnail TEXT, '
-                       'published INTEGER'
+                       'published INTEGER, '
+                       'author TEXT'
                        ')')
 
     db_connection.commit()
@@ -133,10 +137,26 @@ def update_feeds(db_connection, feeds):
 
 
 def try_get_thumbnail(article):
+    # Check for media content
+    if 'media_content' in article:
+        for content in article.media_content:
+            return content['url']
+
+    # Check for media thumbnail
+    if 'media_thumbnail' in article:
+        for content in article.media_thumbnail:
+            return content['url']
+
+    # Check in links
     if 'links' in article:
         for link in article.links:
             if link.type.startswith('image'):
                 return link.href
+
+    # Check in summary
+    matches = IMAGE_URL_REGEX.findall(article.summary)
+    if len(matches) > 0:
+        return matches[0]
 
     return None
 
@@ -147,9 +167,10 @@ def article_exists(cursor, article_id):
     return len(results) > 0
 
 
-def insert_article(cursor, article_id, site_id, title, summary, link, thumbnail, published):
-    cursor.execute('INSERT INTO article (id, site_id, title, summary, link, thumbnail, published) '
-                   'VALUES (?, ?, ?, ?, ?, ?, ?)', (article_id, site_id, title, summary, link, thumbnail, published))
+def insert_article(cursor, article_id, site_id, title, summary, link, thumbnail, published, author):
+    cursor.execute('INSERT INTO article (id, site_id, title, summary, link, thumbnail, published, author) '
+                   'VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                   (article_id, site_id, title, summary, link, thumbnail, published, author))
 
 
 def update_feed(cursor, name, site_id):
@@ -189,12 +210,15 @@ def update_feed(cursor, name, site_id):
         if article.published_parsed is not None:
             published = int(time.mktime(article.published_parsed))
         else:
+            logging.warning(f'No parsed date in "{name}" article "{title}".')
             published = int(time.mktime(dateparser.parse(article.published).timetuple()))
         thumbnail = try_get_thumbnail(article)
 
+        author = article.author if 'author' in article else None
+
         logging.info(f'Inserting "{name}" article "{title}".')
 
-        insert_article(cursor, article_id, site_id, title, summary, link, thumbnail, published)
+        insert_article(cursor, article_id, site_id, title, summary, link, thumbnail, published, author)
 
 
 if __name__ == '__main__':
