@@ -13,6 +13,8 @@ SITE = 'site'
 ARTICLE = 'article'
 
 IMAGE_URL_REGEX = re.compile(r'"(https?://[^"]*\.(?:png|jpg))"', re.IGNORECASE)
+HTML_TAG_REGEX = re.compile(r'<.*?>')
+EXTRA_SPACE_REGEX = re.compile(r' +')
 
 
 def main():
@@ -161,6 +163,14 @@ def try_get_thumbnail(article):
     return None
 
 
+def remove_html_tags(text):
+    return HTML_TAG_REGEX.sub('', text)
+
+
+def remove_extra_spaces(text):
+    return EXTRA_SPACE_REGEX.sub(' ', text.replace('\n', ' '))
+
+
 def article_exists(cursor, article_id):
     cursor.execute('SELECT id FROM article WHERE id=?', (article_id,))
     results = cursor.fetchall()
@@ -206,7 +216,7 @@ def update_feed(cursor, name, site_id):
 
         title = article.title
         link = article.title
-        summary = article.summary
+        summary = remove_extra_spaces(remove_html_tags(article.summary))
 
         date = article.published_parsed if 'published_parsed' in article else article.modified_parsed
         if date is not None:
