@@ -78,7 +78,8 @@ def create_tables(db_connection):
     if not table_exists(cursor, ARTICLE):
         logging.info(f'{ARTICLE} table not created yet. Creating {ARTICLE} table.')
         cursor.execute('CREATE TABLE article ('
-                       'id TEXT, '
+                       'id INTEGER PRIMARY KEY, '  # Artificial ID assigned to allow source independent identification
+                       'original_id TEXT, '  # Article ID given by publisher
                        'site_id INTEGER REFERENCES site (id), '
                        'title TEXT, '
                        'summary TEXT, '
@@ -172,13 +173,13 @@ def remove_extra_spaces(text):
 
 
 def article_exists(cursor, article_id):
-    cursor.execute('SELECT id FROM article WHERE id=?', (article_id,))
+    cursor.execute('SELECT original_id FROM article WHERE original_id=?', (article_id,))
     results = cursor.fetchall()
     return len(results) > 0
 
 
 def insert_article(cursor, article_id, site_id, title, summary, link, thumbnail, published, author):
-    cursor.execute('INSERT INTO article (id, site_id, title, summary, link, thumbnail, published, author) '
+    cursor.execute('INSERT INTO article (original_id, site_id, title, summary, link, thumbnail, published, author) '
                    'VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                    (article_id, site_id, title, summary, link, thumbnail, published, author))
 
