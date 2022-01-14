@@ -216,7 +216,7 @@ def update_feed(cursor, name, site_id):
             continue
 
         title = article.title
-        link = article.title
+        link = article.link
         summary = remove_extra_spaces(remove_html_tags(article.summary))
 
         date = article.published_parsed if 'published_parsed' in article else article.modified_parsed

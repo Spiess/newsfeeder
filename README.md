@@ -19,10 +19,11 @@ are:
   {"articles": [{
     "site": <site_name>,
     "title": <article_title>,
-    "summary": <article_title>,
-    "thumbnail": <article_title>,
-    "author": <article_title>,
-    "published": <article_title>
+    "summary": <article_summary>,
+    "link": <article_url>,
+    "thumbnail": <thumbnail_url>,
+    "author": <article_author>,
+    "published": <publish_date_unix_timestamp>
   }, ...]}
   ```
   Where `<sites>` is a comma separated list of site IDs or `all` and `<last_article_published>` is the optional unix

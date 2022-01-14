@@ -13,12 +13,12 @@ def request_articles(sites, n_articles, last_article_published=None):
 
     db_con = sqlite3.connect('articles.db')
     cursor = db_con.cursor()
-    cursor.execute('SELECT name, title, summary, thumbnail, author, published '
+    cursor.execute('SELECT name, title, summary, link, thumbnail, author, published '
                    'FROM article a JOIN site s on s.id = a.site_id '
                    f'{where_term}'
                    'ORDER BY published DESC LIMIT ?', where_values + (n_articles,))
     return query_to_dict('articles', cursor.fetchall(),
-                         ['site', 'title', 'summary', 'thumbnail', 'author', 'published'])
+                         ['site', 'title', 'summary', 'link', 'thumbnail', 'author', 'published'])
 
 
 @app.route("/sites")
