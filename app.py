@@ -1,6 +1,6 @@
 import sqlite3
 
-from flask import Flask, abort
+from flask import Flask, abort, g
 
 app = Flask(__name__)
 
@@ -11,8 +11,8 @@ def request_articles(sites, n_articles, last_article_published=None):
     sites_term, sites_values = parse_sites(sites)
     where_term, where_values = assemble_where(sites_term, sites_values, last_article_published)
 
-    db_con = sqlite3.connect('articles.db')
-    cursor = db_con.cursor()
+    db = get_db()
+    cursor = db.cursor()
     cursor.execute('SELECT name, title, summary, link, thumbnail, author, published '
                    'FROM article a JOIN site s on s.id = a.site_id '
                    f'{where_term}'
@@ -23,8 +23,8 @@ def request_articles(sites, n_articles, last_article_published=None):
 
 @app.route("/sites")
 def request_sites():
-    db_con = sqlite3.connect('articles.db')
-    cursor = db_con.cursor()
+    db = get_db()
+    cursor = db.cursor()
     cursor.execute('SELECT name, id FROM site')
     return query_to_dict('sites', cursor.fetchall(), ['site', 'id'])
 
@@ -63,3 +63,20 @@ def assemble_where(sites_term, sites_values, last_article_published):
             values += (last_article_published,)
 
         return term, values
+
+
+def get_db():
+    if 'db' not in g:
+        g.db = db = sqlite3.connect('articles.db')
+
+    return g.db
+
+
+def close_db(e=None):
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()
+
+
+app.teardown_appcontext(close_db)
