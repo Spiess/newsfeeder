@@ -10,8 +10,8 @@ SQLite DB (default: articles.db).
 
 ## API
 
-An API is provided by the Flask server specified in `app.py`, which can be run with `flask run`. The supported endpoints
-are:
+An API is provided by the Flask server specified in `plate/`, which can be run with `export FLASK_APP=plate;flask run`.
+The supported endpoints are:
 
 - `<host>/sites`: `{"sites": [{"site": <site_name>, "id": <site_id>}, ...]}`
 - `<host>/articles/<sites>/<n_articles>/<last_article_published>`:
