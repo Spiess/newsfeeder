@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <title>NewsFeeder</title>
+</head>
+<body>
+<h1>NewsFeeder</h1>
+{% block content%}
+  {% for article in articles %}
+    <article>
+      <header>
+        <h2>{{ article['title'] }}</h2>
+        {% if article['author'] is not none %}
+          <p>{{ article['author'] }}</p>
+        {% endif %}
+      </header>
+      {% if article['thumbnail'] is not none %}
+        <img src="{{ article['thumbnail'] }}" alt="{{ article['title'] }}">
+      {% endif %}
+      <p>{{ article['summary'] }}</p>
+      <a href="{{ article['link'] }}">Read on {{ article['site'] }}</a>
+    </article>
+  {% endfor %}
+{% endblock %}
+</body>
+</html>

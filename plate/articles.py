@@ -37,9 +37,7 @@ def assemble_where(sites_term, sites_values, last_article_published):
         return term, values
 
 
-@bp.route("/<sites>/<int:n_articles>")
-@bp.route("/<sites>/<int:n_articles>/<int:last_article_published>")
-def request_articles(sites, n_articles, last_article_published=None):
+def retrieve_articles(sites, n_articles, last_article_published=None):
     sites_term, sites_values = parse_sites(sites)
     where_term, where_values = assemble_where(sites_term, sites_values, last_article_published)
 
@@ -49,4 +47,11 @@ def request_articles(sites, n_articles, last_article_published=None):
                    'FROM article a JOIN site s on s.id = a.site_id '
                    f'{where_term}'
                    'ORDER BY published DESC LIMIT ?', where_values + (n_articles,))
-    return {'articles': [dict(row) for row in cursor.fetchall()]}
+    return [dict(row) for row in cursor.fetchall()]
+
+
+@bp.route("/<sites>/<int:n_articles>")
+@bp.route("/<sites>/<int:n_articles>/<int:last_article_published>")
+def request_articles(sites, n_articles, last_article_published=None):
+    articles = retrieve_articles(sites, n_articles, last_article_published)
+    return {'articles': articles}

@@ -1,8 +1,11 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
+
+from plate.articles import retrieve_articles
 
 bp = Blueprint('feed', __name__)
 
 
 @bp.route('/')
 def get_feed():
-    return '<p>Hello!</p>'
+    articles = retrieve_articles('all', 32)
+    return render_template('base.html', articles=articles)
