@@ -1,5 +1,6 @@
 body {
   font-family: 'Helvetica', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+  margin: 1em;
 }
 
 img {
@@ -8,12 +9,16 @@ img {
 }
 
 article {
-  margin-bottom: 20px;
+  margin-bottom: 1em;
   display: inline-block;
 }
 
 .articles {
-  column-width: 400px;
+  column-width: 28em;
+}
+
+.summary {
+  line-height: 1.5;
 }
 
 @media (prefers-color-scheme: light) {
@@ -29,11 +34,31 @@ article {
 
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: #161618;
+    background-color: #262628;
+    color: #afafaf;
+  }
+
+  .title {
     color: white;
   }
 
   article {
     border-top: 1px solid white;
+  }
+
+  .link:link {
+    color: #be0000;
+  }
+
+  .link:visited {
+    color: #930000;
+  }
+
+  .link:hover {
+    color: #e00000;
+  }
+
+  .link:active {
+    color: #e00000;
   }
 }
