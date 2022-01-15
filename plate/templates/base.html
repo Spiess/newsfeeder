@@ -3,26 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="stylesheet", type="text/css" href="{{ url_for('static', filename='style.css') }}">
   <title>NewsFeeder</title>
 </head>
 <body>
 <h1>NewsFeeder</h1>
 {% block content%}
+  <div class="articles">
   {% for article in articles %}
-    <article>
-      <header>
-        <h2>{{ article['title'] }}</h2>
-        {% if article['author'] is not none %}
-          <p>{{ article['author'] }}</p>
+      <article>
+        <header>
+          <h2>{{ article['title'] }}</h2>
+          {% if article['author'] is not none %}
+            <p>{{ article['author'] }}</p>
+          {% endif %}
+        </header>
+        {% if article['thumbnail'] is not none %}
+          <img src="{{ article['thumbnail'] }}" alt="{{ article['title'] }}">
         {% endif %}
-      </header>
-      {% if article['thumbnail'] is not none %}
-        <img src="{{ article['thumbnail'] }}" alt="{{ article['title'] }}">
-      {% endif %}
-      <p>{{ article['summary'] }}</p>
-      <a href="{{ article['link'] }}">Read on {{ article['site'] }}</a>
-    </article>
-  {% endfor %}
+        <p>{{ article['summary'] }}</p>
+        <a href="{{ article['link'] }}">Read on {{ article['site'] }}</a>
+      </article>
+    {% endfor %}
+  </div>
 {% endblock %}
 </body>
 </html>

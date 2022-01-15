@@ -1,0 +1,39 @@
+body {
+  font-family: 'Helvetica', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+article {
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.articles {
+  column-width: 400px;
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: white;
+    color: black;
+  }
+
+  article {
+    border-top: 1px solid black;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #161618;
+    color: white;
+  }
+
+  article {
+    border-top: 1px solid white;
+  }
+}
