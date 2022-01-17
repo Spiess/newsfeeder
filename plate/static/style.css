@@ -1,6 +1,9 @@
 body {
   font-family: 'Helvetica', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
-  margin: 1em;
+}
+
+h1 {
+  margin: .5rem;
 }
 
 img {
@@ -9,12 +12,15 @@ img {
 }
 
 article {
-  margin-bottom: 1em;
+  margin: 0 .5em 1em;
   display: inline-block;
+  flex-basis: 28em;
+  flex-grow: 1;
 }
 
 .articles {
-  column-width: 28em;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .summary {
