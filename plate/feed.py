@@ -37,6 +37,9 @@ def format_time_delta(delta):
 def get_feed(sites='all', n_articles=32, last_article_published=None):
     articles = retrieve_articles(sites, n_articles, last_article_published)
     current_time = time.time()
+
+    last = min([article['published'] for article in articles])
+
     for article in articles:
         pub_time = article['published']
         article['published_since'] = format_time_delta(current_time - pub_time)
@@ -46,4 +49,5 @@ def get_feed(sites='all', n_articles=32, last_article_published=None):
         max_length = 500
         if len(summary) > max_length:
             article['summary'] = summary[:max_length] + '...'
-    return render_template('base.html', articles=articles)
+
+    return render_template('base.html', articles=articles, sites=sites, n_articles=n_articles, last=last)

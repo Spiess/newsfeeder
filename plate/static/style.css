@@ -27,6 +27,11 @@ article {
   line-height: 1.5;
 }
 
+.next-page {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
 @media (prefers-color-scheme: light) {
   body {
     background-color: white;

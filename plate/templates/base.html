@@ -36,5 +36,8 @@
     {% endfor %}
   </div>
 {% endblock %}
+<h2 class="next-page">
+  <a href="{{ url_for('feed.get_feed', sites=sites, n_articles=n_articles, last_article_published=last) }}" class="link">Next page...</a>
+</h2>
 </body>
 </html>
