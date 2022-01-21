@@ -134,10 +134,13 @@ def update_feeds(db_connection, feeds):
     for name, site_id in feeds.items():
         logging.info(f'Fetching articles for "{name}".')
         cursor = db_connection.cursor()
-
-        update_feed(cursor, name, site_id)
-
-        db_connection.commit()
+        try:
+            update_feed(cursor, name, site_id)
+        except AttributeError as e:
+            logging.error(f'Encountered attribute error: {e}')
+            db_connection.rollback()
+        else:
+            db_connection.commit()
 
 
 def try_get_thumbnail(article):
