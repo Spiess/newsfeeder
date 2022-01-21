@@ -15,7 +15,9 @@
       <article>
         <header>
           <h2 class="title">
-            {{ article['title'] }}
+            <a class="title-link" href="{{ article['link'] }}" target="_blank" rel="noopener noreferrer">
+              {{ article['title'] }}
+            </a>
           </h2>
           <p><abbr title="{{ article['published'] }}">{{ article['published_since'] }}</abbr> ago
           {% if article['author'] is not none %}

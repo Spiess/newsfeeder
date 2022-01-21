@@ -33,6 +33,26 @@ article {
     color: black;
   }
 
+  .title-link:link {
+    color: black;
+    text-decoration: none;
+  }
+
+  .title-link:visited {
+    color: black;
+    text-decoration: none;
+  }
+
+  .title-link:hover {
+    color: black;
+    text-decoration: none;
+  }
+
+  .title-link:active {
+    color: black;
+    text-decoration: none;
+  }
+
   article {
     border-top: 1px solid black;
   }
@@ -46,6 +66,26 @@ article {
 
   .title {
     color: white;
+  }
+
+  .title-link:link {
+    color: white;
+    text-decoration: none;
+  }
+
+  .title-link:visited {
+    color: white;
+    text-decoration: none;
+  }
+
+  .title-link:hover {
+    color: white;
+    text-decoration: none;
+  }
+
+  .title-link:active {
+    color: white;
+    text-decoration: none;
   }
 
   article {
