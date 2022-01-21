@@ -1,5 +1,6 @@
 import argparse
 import csv
+import html
 import logging
 import re
 import sqlite3
@@ -165,7 +166,7 @@ def try_get_thumbnail(article):
 
 
 def remove_html_tags(text):
-    return HTML_TAG_REGEX.sub('', text)
+    return html.unescape(HTML_TAG_REGEX.sub(' ', text))
 
 
 def remove_extra_spaces(text):
