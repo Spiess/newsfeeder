@@ -6,6 +6,7 @@ import re
 import sqlite3
 import threading
 import time
+from datetime import timedelta
 
 import feedparser
 from dateutil import parser as dateparser
@@ -228,7 +229,8 @@ def update_feed(cursor, name, site_id):
             published = int(time.mktime(date))
         else:
             logging.warning(f'No parsed date in "{name}" article "{title}".')
-            published = int(time.mktime(dateparser.parse(article.published).timetuple()))
+            # Add five hours because the only current source without parseable date is in UTC-5
+            published = int(time.mktime((dateparser.parse(article.published) + timedelta(hours=5)).timetuple()))
         thumbnail = try_get_thumbnail(article)
 
         author = article.author if 'author' in article else None
