@@ -34,7 +34,7 @@ def format_time_delta(delta):
 @bp.route("/<sites>")
 @bp.route("/<sites>/<int:n_articles>")
 @bp.route("/<sites>/<int:n_articles>/<int:last_article_published>")
-def get_feed(sites='all', n_articles=32, last_article_published=None):
+def get_feed(sites='all', n_articles=35, last_article_published=None):
     articles = retrieve_articles(sites, n_articles, last_article_published)
     current_time = time.time()
 
