@@ -19,15 +19,19 @@ def format_time_delta(delta):
     hours = int((delta % spd) / sph)
     days = int(delta / spd)
 
+    minutes_string = f'{minutes} minute{"s" if minutes != 1 else ""}'
+    hours_string = f'{hours} hour{"s" if hours != 1 else ""}'
+
     if delta < spm:
         return f'{seconds} second{"s" if seconds != 1 else ""}'
     elif delta < sph:
-        return f'{minutes} minute{"s" if minutes != 1 else ""}'
+        return minutes_string
     elif delta < spd:
-        return f'{hours} hour{"s" if hours != 1 else ""}, {minutes} minute{"s" if minutes != 1 else ""}'
+        return f'{hours_string}{f", {minutes_string}" if minutes > 0 else ""}'
     else:
-        return f'{days} day{"s" if days != 1 else ""}, {hours} hour{"s" if hours != 1 else ""}, ' \
-               f'{minutes} minute{"s" if minutes != 1 else ""}'
+        return f'{days} day{"s" if days != 1 else ""}' \
+               f'{f", {hours_string}" if hours > 0 else ""}' \
+               f'{f", {minutes_string}" if minutes > 0 else ""}'
 
 
 @bp.route('/')
