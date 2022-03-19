@@ -75,7 +75,14 @@ def create_tables(db_connection):
 
     if not table_exists(cursor, SITE):
         logging.info(f'{SITE} table not created yet. Creating {SITE} table.')
-        cursor.execute('CREATE TABLE site (name TEXT, id INTEGER PRIMARY KEY, feed TEXT, etag TEXT, modified TEXT)')
+        cursor.execute('CREATE TABLE site ('
+                       'id INTEGER PRIMARY KEY, '
+                       'name TEXT, '
+                       'feed TEXT, '
+                       'icon TEXT, '
+                       'etag TEXT, '
+                       'modified TEXT'
+                       ')')
 
     if not table_exists(cursor, ARTICLE):
         logging.info(f'{ARTICLE} table not created yet. Creating {ARTICLE} table.')
@@ -99,26 +106,29 @@ def initialize_feeds(db_connection, feeds_file):
 
     with open(feeds_file) as f:
         reader = csv.reader(f)
-        feeds = {name: get_site_id(db_connection, name, feed) for (name, feed) in reader}
+        feeds = {name: get_site_id(db_connection, name, feed, icon) for (name, feed, icon) in reader}
 
     return feeds
 
 
-def get_site_id(db_connection, name, feed):
+def get_site_id(db_connection, name, feed, icon):
+    if not icon:
+        icon = None
     cursor = db_connection.cursor()
     # Check if site already inserted
     cursor.execute(f"SELECT id FROM site WHERE name=?", (name,))
     site_id = cursor.fetchall()
 
-    if len(site_id) == 0:
-        logging.info(f'Site "{name}" not yet in database, will be inserted with feed: "{feed}"')
-        cursor.execute(f'INSERT INTO site (name, feed) VALUES (?, ?)', (name, feed))
-        cursor.execute(f'SELECT id FROM site WHERE name=?', (name,))
-        site_id = cursor.fetchall()
+    if len(site_id) > 0:
+        return site_id[0][0]
+
+    logging.info(f'Site "{name}" not yet in database, will be inserted with feed: "{feed}"')
+    cursor.execute(f'INSERT INTO site (name, feed, icon) VALUES (?, ?, ?)', (name, feed, icon))
+    site_id = cursor.lastrowid
 
     db_connection.commit()
 
-    return site_id[0][0]
+    return site_id
 
 
 def table_exists(cursor, table):

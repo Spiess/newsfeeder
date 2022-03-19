@@ -43,7 +43,7 @@ def retrieve_articles(sites, n_articles, last_article_published=None):
 
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('SELECT name AS site, title, summary, link, thumbnail, author, published '
+    cursor.execute('SELECT name AS site, title, summary, link, thumbnail, author, published, icon '
                    'FROM article a JOIN site s on s.id = a.site_id '
                    f'{where_term}'
                    'ORDER BY published DESC LIMIT ?', where_values + (n_articles,))

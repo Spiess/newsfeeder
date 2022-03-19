@@ -1,20 +1,20 @@
-PC Gamer,feed:https://www.pcgamer.com/rss/?feed=rss
-Eurogamer,feed:https://www.eurogamer.net/?format=rss
-Nintendojo,feed:https://www.nintendojo.com/category/news/feed
-Techraptor,feed:https://techraptor.net/news/feed
-Polygon,https://www.polygon.com/rss/index.xml
-Game Informer,feed:https://www.gameinformer.com/news.xml
-Rock Paper Shotgun,feed:https://www.rockpapershotgun.com/feed/news
-PlayStation Blog,feed:https://blog.playstation.com/feed/
-Nintendo Life,feed:https://www.nintendolife.com/feeds/latest
-Xbox Wire,feed:https://news.xbox.com/en-us/feed/
-NVIDIA Blog,feed:https://blogs.nvidia.com/feed/
-Engadget,https://www.engadget.com/rss.xml
-PCGamesN,feed:https://www.pcgamesn.com/mainrss.xml
-GamingOnLinux,feed:https://www.gamingonlinux.com/article_rss.php
-Dolphin Progress Report,feed:https://dolphin-emu.org/blog/feeds/
-mGBA Blog,feed:https://mgba.io/feed.xml
-Citra Blog,feed:https://citra-emu.org/index.xml
-PCSX2 Blog,feed:https://pcsx2.net/?format=feed&type=rss
-xkcd,feed:https://xkcd.com/atom.xml
-MacRumors,https://feeds.macrumors.com/MacRumors-Front
+PC Gamer,feed:https://www.pcgamer.com/rss/?feed=rss,https://vanilla.futurecdn.net/pcgamer/434420/apple-touch-icon.png
+Eurogamer,feed:https://www.eurogamer.net/?format=rss,https://www.eurogamer.net/img/favicons/apple-touch-icon-152x152.png
+Nintendojo,feed:https://www.nintendojo.com/category/news/feed,https://nintendojo.com/favicon.ico
+Techraptor,feed:https://techraptor.net/news/feed,
+Polygon,https://www.polygon.com/rss/index.xml,https://cdn.vox-cdn.com/uploads/hub/sbnu_logo_minimal/405/touch_icon_ipad_retina_1000x1000.7014.png
+Game Informer,feed:https://www.gameinformer.com/news.xml,https://www.gameinformer.com/sites/default/files/favicons/apple-touch-icon.png
+Rock Paper Shotgun,feed:https://www.rockpapershotgun.com/feed/news,https://www.rockpapershotgun.com/static/8f695356809fa85c2b9e7b4e613f73ff/icon/apple-touch-icon.png
+PlayStation Blog,feed:https://blog.playstation.com/feed/,https://blog.playstation.com/tachyon/2019/03/cropped-pslogo.png
+Nintendo Life,feed:https://www.nintendolife.com/feeds/latest,https://images.nintendolife.com/site/icon/180x180.png
+Xbox Wire,feed:https://news.xbox.com/en-us/feed/,https://news.xbox.com/en-us/wp-content/uploads/sites/2/2019/12/Nexus_GRN_on_WHT2.png
+NVIDIA Blog,feed:https://blogs.nvidia.com/feed/,https://blogs.nvidia.com/favicon.ico
+Engadget,https://www.engadget.com/rss.xml,https://s.yimg.com/kw/assets/apple-touch-icon-152x152.png
+PCGamesN,feed:https://www.pcgamesn.com/mainrss.xml,https://www.pcgamesn.com/wp-content/themes/pcgamesn/dist/images/favicon/apple-touch-icon.png
+GamingOnLinux,feed:https://www.gamingonlinux.com/article_rss.php,https://www.gamingonlinux.com/templates/default/images/favicons/apple-touch-icon-180x180.png
+Dolphin Progress Report,feed:https://dolphin-emu.org/blog/feeds/,https://dolphin-emu.org/m/static/img/favicon.0885422b72c1.ico
+mGBA Blog,feed:https://mgba.io/feed.xml,https://mgba.io/apple-touch-icon-180x180.png
+Citra Blog,feed:https://citra-emu.org/index.xml,https://citra-emu.org/favicon.ico
+PCSX2 Blog,feed:https://pcsx2.net/?format=feed&type=rss,https://pcsx2.net/favicon.ico
+xkcd,feed:https://xkcd.com/atom.xml,https://xkcd.com/s/919f27.ico
+MacRumors,https://feeds.macrumors.com/MacRumors-Front,https://images.macrumors.com/images-new/apple-touch-icon.png

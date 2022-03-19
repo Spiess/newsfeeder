@@ -19,7 +19,11 @@
               {{ article['title'] }}
             </a>
           </h2>
-          <p><abbr title="{{ article['published'] }}">{{ article['published_since'] }}</abbr> ago
+          <p>
+          {% if article['icon'] is not none %}
+            <img src="{{ article['icon'] }}" class="site-icon">
+          {% endif %}
+              <abbr title="{{ article['published'] }}">{{ article['published_since'] }}</abbr> ago
           {% if article['author'] is not none %}
             by {{ article['author'] }}
           {% endif %}

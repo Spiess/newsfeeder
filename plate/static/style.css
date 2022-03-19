@@ -32,6 +32,11 @@ article {
   margin-bottom: 1em;
 }
 
+.site-icon {
+  height: 1em;
+  vertical-align: top;
+}
+
 @media (prefers-color-scheme: light) {
   body {
     background-color: white;
