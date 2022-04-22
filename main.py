@@ -48,6 +48,7 @@ def update_feeds_loop(db_path, feeds, interval: float, stop_event: threading.Eve
     while not stop_event.is_set():
         logging.info('Updating feeds.')
         update_feeds(db_connection, feeds)
+        logging.info('Updating feeds complete.')
         stop_event.wait(interval)
 
 
