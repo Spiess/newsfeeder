@@ -113,15 +113,24 @@ def initialize_feeds(db_connection, feeds_file):
 
 
 def get_site_id(db_connection, name, feed, icon):
+    """
+    Returns internal site ID.
+    Creates database entry if it does not yet exist and updates icon URL if it has been changed.
+    """
     if not icon:
         icon = None
     cursor = db_connection.cursor()
     # Check if site already inserted
-    cursor.execute(f"SELECT id FROM site WHERE name=?", (name,))
-    site_id = cursor.fetchall()
+    cursor.execute(f"SELECT id, icon FROM site WHERE name=?", (name,))
+    results = cursor.fetchall()
 
-    if len(site_id) > 0:
-        return site_id[0][0]
+    if len(results) > 0:
+        site_id, current_icon = results[0]
+        if current_icon != icon:
+            logging.info(f'Updating "{name}" site icon from "{current_icon}" to "{icon}"')
+            cursor.execute(f'UPDATE site SET icon=? WHERE id=?', (icon, site_id))
+            db_connection.commit()
+        return site_id
 
     logging.info(f'Site "{name}" not yet in database, will be inserted with feed: "{feed}"')
     cursor.execute(f'INSERT INTO site (name, feed, icon) VALUES (?, ?, ?)', (name, feed, icon))
