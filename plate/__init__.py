@@ -25,9 +25,10 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from . import articles, sites, feed
+    from . import articles, sites, feed, system
     app.register_blueprint(articles.bp)
     app.register_blueprint(sites.bp)
     app.register_blueprint(feed.bp)
+    app.register_blueprint(system.bp)
 
     return app

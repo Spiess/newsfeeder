@@ -13,6 +13,7 @@ from dateutil import parser as dateparser
 
 SITE = 'site'
 ARTICLE = 'article'
+SYSTEM = 'system'
 
 IMAGE_URL_REGEX = re.compile(r'"(https?://[^"]*\.(?:png|jpg))"', re.IGNORECASE)
 HTML_TAG_REGEX = re.compile(r'<.*?>')
@@ -47,7 +48,8 @@ def update_feeds_loop(db_path, feeds, interval: float, stop_event: threading.Eve
 
     while not stop_event.is_set():
         logging.info('Updating feeds.')
-        update_feeds(db_connection, feeds)
+        success = update_feeds(db_connection, feeds)
+        log_update_feeds(db_connection, success)
         logging.info('Updating feeds complete.')
         stop_event.wait(interval)
 
@@ -99,6 +101,13 @@ def create_tables(db_connection):
                        'author TEXT'
                        ')')
 
+    if not table_exists(cursor, SYSTEM):
+        logging.info(f'{SYSTEM} table not created yet. Creating {SYSTEM} table.')
+        cursor.execute('CREATE TABLE system ('
+                       'update_time INTEGER, '
+                       'success INTEGER'
+                       ')')
+
     db_connection.commit()
 
 
@@ -121,19 +130,19 @@ def get_site_id(db_connection, name, feed, icon):
         icon = None
     cursor = db_connection.cursor()
     # Check if site already inserted
-    cursor.execute(f"SELECT id, icon FROM site WHERE name=?", (name,))
+    cursor.execute("SELECT id, icon FROM site WHERE name=?", (name,))
     results = cursor.fetchall()
 
     if len(results) > 0:
         site_id, current_icon = results[0]
         if current_icon != icon:
             logging.info(f'Updating "{name}" site icon from "{current_icon}" to "{icon}"')
-            cursor.execute(f'UPDATE site SET icon=? WHERE id=?', (icon, site_id))
+            cursor.execute("UPDATE site SET icon=? WHERE id=?", (icon, site_id))
             db_connection.commit()
         return site_id
 
     logging.info(f'Site "{name}" not yet in database, will be inserted with feed: "{feed}"')
-    cursor.execute(f'INSERT INTO site (name, feed, icon) VALUES (?, ?, ?)', (name, feed, icon))
+    cursor.execute("INSERT INTO site (name, feed, icon) VALUES (?, ?, ?)", (name, feed, icon))
     site_id = cursor.lastrowid
 
     db_connection.commit()
@@ -152,6 +161,7 @@ def fetch_feed(feed, etag: str = None, modified=None):
 
 
 def update_feeds(db_connection, feeds):
+    success = True
     for name, site_id in feeds.items():
         logging.info(f'Fetching articles for "{name}".')
         cursor = db_connection.cursor()
@@ -160,8 +170,18 @@ def update_feeds(db_connection, feeds):
         except AttributeError as e:
             logging.error(f'Encountered attribute error: {e}')
             db_connection.rollback()
+            success = False
         else:
             db_connection.commit()
+
+    return success
+
+
+def log_update_feeds(db_connection, success):
+    current_time = int(time.time())
+    cursor = db_connection.cursor()
+    cursor.execute("INSERT INTO system (update_time, success) VALUES (?, ?)", (current_time, success))
+    db_connection.commit()
 
 
 def try_get_thumbnail(article):
