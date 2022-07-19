@@ -25,7 +25,12 @@
           {% endif %}
               <abbr title="{{ article['published'] }}">{{ article['published_since'] }}</abbr> ago
           {% if article['author'] is not none %}
-            by {{ article['author'] }}
+            by
+            {% if article['author_email'] is not none %}
+                <abbr title="{{ article['author_email'] }}">{{ article['author'] }}</abbr>
+            {% else %}
+                {{ article['author'] }}
+            {% endif %}
           {% endif %}
           </p>
         </header>

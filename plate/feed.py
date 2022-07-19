@@ -1,9 +1,12 @@
+import re
 import time
 from datetime import datetime
 
 from flask import Blueprint, render_template
 
 from plate.articles import retrieve_articles
+
+EMAIL_REGEX = re.compile(r'(?P<email>.*@.*)\s\((?P<name>.*)\)')
 
 bp = Blueprint('feed', __name__)
 
@@ -53,5 +56,13 @@ def get_feed(sites='all', n_articles=35, last_article_published=None):
         max_length = 500
         if len(summary) > max_length:
             article['summary'] = summary[:max_length] + '...'
+        # Author
+        if article['author'] is not None:
+            email_match = EMAIL_REGEX.match(article['author'])
+            if email_match is not None:
+                article['author'] = email_match.group('name')
+                article['author_email'] = email_match.group('email')
+            else:
+                article['author_email'] = None
 
     return render_template('base.html', articles=articles, sites=sites, n_articles=n_articles, last=last)
