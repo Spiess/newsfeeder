@@ -16,6 +16,8 @@ ARTICLE = 'article'
 SYSTEM = 'system'
 
 IMAGE_URL_REGEX = re.compile(r'"(https?://[^"]*\.(?:png|jpg))"', re.IGNORECASE)
+HTML_FIGURE_REGEX = re.compile(r'<figure>[\s\S]*?</figure>')
+HTML_P_REGEX = re.compile(r'</p><p>')
 HTML_TAG_REGEX = re.compile(r'<.*?>')
 EXTRA_SPACE_REGEX = re.compile(r' +')
 
@@ -210,7 +212,13 @@ def try_get_thumbnail(article):
 
 
 def remove_html_tags(text):
-    return html.unescape(HTML_TAG_REGEX.sub(' ', text))
+    # Remove figure tags
+    text = HTML_FIGURE_REGEX.sub('', text)
+    # Replace change of p environment with space
+    text = HTML_P_REGEX.sub(' ', text)
+    # Remove remaining tags
+    text = HTML_TAG_REGEX.sub('', text)
+    return html.unescape(text)
 
 
 def remove_extra_spaces(text):
