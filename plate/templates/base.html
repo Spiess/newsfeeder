@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  <link rel="stylesheet", type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
   <title>NewsFeeder</title>
 </head>
 <body>
@@ -21,7 +21,7 @@
           </h2>
           <p>
           {% if article['icon'] is not none %}
-            <img src="{{ article['icon'] }}" class="site-icon">
+            <img src="{{ article['icon'] }}" class="site-icon" alt="{{ article['site'] }} icon">
           {% endif %}
               <abbr title="{{ article['published'] }}">{{ article['published_since'] }}</abbr> ago
           {% if article['author'] is not none %}
