@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve NewsFeeder
+After=network.target
+
+[Service]
+User=user
+Group=www-data
+WorkingDirectory=/path/to/newsfeeder
+Environment="PATH=/path/to/newsfeeder/venv/bin"
+ExecStart=/path/to/newsfeeder/venv/bin/uwsgi --ini newsfeeder.ini
+
+[Install]
+WantedBy=multi-user.target
