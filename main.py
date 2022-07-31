@@ -1,4 +1,5 @@
 import argparse
+import calendar
 import csv
 import html
 import logging
@@ -274,11 +275,11 @@ def update_feed(cursor, name, site_id):
 
         date = article.published_parsed if 'published_parsed' in article else article.modified_parsed
         if date is not None:
-            published = int(time.mktime(date))
+            published = calendar.timegm(date)
         else:
             logging.warning(f'No parsed date in "{name}" article "{title}".')
             # Add five hours because the only current source without parseable date is in UTC-5
-            published = int(time.mktime((dateparser.parse(article.published) + timedelta(hours=5)).timetuple()))
+            published = calendar.timegm((dateparser.parse(article.published) + timedelta(hours=5)).timetuple())
         thumbnail = try_get_thumbnail(article)
 
         author = article.author if 'author' in article else None
