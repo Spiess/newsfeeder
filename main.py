@@ -187,27 +187,36 @@ def log_update_feeds(db_connection, success):
     db_connection.commit()
 
 
+def ensure_https(link: str):
+    """
+    Converts HTTP links into HTTPS links.
+    """
+    if link.startswith('http:'):
+        return 'https' + link[4:]
+    return link
+
+
 def try_get_thumbnail(article):
     # Check for media content
     if 'media_content' in article:
         for content in article.media_content:
-            return content['url']
+            return ensure_https(content['url'])
 
     # Check for media thumbnail
     if 'media_thumbnail' in article:
         for content in article.media_thumbnail:
-            return content['url']
+            return ensure_https(content['url'])
 
     # Check in links
     if 'links' in article:
         for link in article.links:
             if link.type.startswith('image'):
-                return link.href
+                return ensure_https(link.href)
 
     # Check in summary
     matches = IMAGE_URL_REGEX.findall(article.summary)
     if len(matches) > 0:
-        return matches[0]
+        return ensure_https(matches[0])
 
     return None
 
