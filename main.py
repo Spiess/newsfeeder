@@ -21,6 +21,14 @@ HTML_FIGURE_REGEX = re.compile(r'<figure>[\s\S]*?</figure>')
 HTML_P_REGEX = re.compile(r'</p><p>')
 HTML_TAG_REGEX = re.compile(r'<.*?>')
 EXTRA_SPACE_REGEX = re.compile(r' +')
+TRAILING_REPLACEMENTS = [
+    (re.compile(r' Read the full article on nintendolife\.com$'), ''),
+    (re.compile(r' Continue reading…$'), '.'),
+    (re.compile(r'Read this article on TechRaptor$'), ''),
+    (re.compile(r' View the full site RELATED LINKS:.*$'), ''),
+    (re.compile(r' Read more$'), ''),
+    (re.compile(r' \[…]$'), '...')
+]
 
 
 def main():
@@ -232,7 +240,24 @@ def remove_html_tags(text):
 
 
 def remove_extra_spaces(text):
-    return EXTRA_SPACE_REGEX.sub(' ', text.replace('\n', ' '))
+    # Remove newlines
+    text = text.replace('\n', ' ')
+    # Remove tabs
+    text = text.replace('\t', ' ')
+    # Remove duplicate spaces
+    text = EXTRA_SPACE_REGEX.sub(' ', text)
+    # Remove leading and trailing spaces
+    return text.strip()
+
+
+def remove_trailing_message(text: str):
+    """
+    Removes unrelated trailing messages.
+    """
+    for regex, replacement in TRAILING_REPLACEMENTS:
+        text = regex.sub(replacement, text)
+
+    return text
 
 
 def article_exists(cursor, article_id):
@@ -280,7 +305,7 @@ def update_feed(cursor, name, site_id):
 
         title = article.title
         link = article.link
-        summary = remove_extra_spaces(remove_html_tags(article.summary))
+        summary = remove_trailing_message(remove_extra_spaces(remove_html_tags(article.summary)))
 
         date = article.published_parsed if 'published_parsed' in article else article.modified_parsed
         if date is not None:
