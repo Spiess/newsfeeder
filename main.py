@@ -8,6 +8,7 @@ import sqlite3
 import threading
 import time
 from datetime import timedelta
+from http.client import RemoteDisconnected
 
 import feedparser
 from dateutil import parser as dateparser
@@ -180,6 +181,10 @@ def update_feeds(db_connection, feeds):
             update_feed(cursor, name, site_id)
         except AttributeError as e:
             logging.error(f'Encountered attribute error: {e}')
+            db_connection.rollback()
+            success = False
+        except RemoteDisconnected as e:
+            logging.error(f'Encountered remote disconnected: {e}')
             db_connection.rollback()
             success = False
         else:
