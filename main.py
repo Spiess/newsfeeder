@@ -27,7 +27,7 @@ TRAILING_REPLACEMENTS = [
     (re.compile(r' Continue reading…$'), '.'),
     (re.compile(r'Read this article on TechRaptor$'), ''),
     (re.compile(r' View the full site RELATED LINKS:.*$'), ''),
-    (re.compile(r' MORE FROM PCGAMESN: .*$'), '.'),
+    (re.compile(r' Continue reading .*$'), ''),
     (re.compile(r' Read more$'), ''),
     (re.compile(r' \[…]$'), '...')
 ]
