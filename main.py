@@ -319,8 +319,9 @@ def update_feed(cursor, name, site_id):
             published = calendar.timegm(date)
         else:
             logging.warning(f'No parsed date in "{name}" article "{title}".')
-            # Add five hours because the only current source without parseable date is in UTC-5
-            published = calendar.timegm((dateparser.parse(article.published) + timedelta(hours=5)).timetuple())
+            # Add four hours because the only current source without parseable date is in UTC-5 for standard time and
+            # UTC-4 for daylight saving time and adding four hours has a less noticeable impact
+            published = calendar.timegm((dateparser.parse(article.published) + timedelta(hours=4)).timetuple())
         thumbnail = try_get_thumbnail(article)
 
         author = article.author if 'author' in article else None
