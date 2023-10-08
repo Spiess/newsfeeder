@@ -16,6 +16,7 @@ from dateutil import parser as dateparser
 SITE = 'site'
 ARTICLE = 'article'
 SYSTEM = 'system'
+ARTICLE_INDEX = 'idx_article_published'
 
 IMAGE_URL_REGEX = re.compile(r'"(https?://[^"]*\.(?:png|jpg))"', re.IGNORECASE)
 HTML_FIGURE_REGEX = re.compile(r'<figure>[\s\S]*?</figure>')
@@ -116,6 +117,10 @@ def create_tables(db_connection):
                        'author TEXT'
                        ')')
 
+    if not index_exists(cursor, ARTICLE_INDEX):
+        logging.info(f'{ARTICLE_INDEX} index not created yet. Creating {ARTICLE_INDEX} index.')
+        cursor.execute('CREATE INDEX idx_article_published ON article (published)')
+
     if not table_exists(cursor, SYSTEM):
         logging.info(f'{SYSTEM} table not created yet. Creating {SYSTEM} table.')
         cursor.execute('CREATE TABLE system ('
@@ -165,10 +170,18 @@ def get_site_id(db_connection, name, feed, icon):
     return site_id
 
 
-def table_exists(cursor, table):
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,))
+def db_object_exists(cursor, type_, name):
+    cursor.execute("SELECT name FROM sqlite_master WHERE type=? AND name=?", (type_, name))
     results = cursor.fetchall()
     return len(results) > 0
+
+
+def table_exists(cursor, table):
+    return db_object_exists(cursor, 'table', table)
+
+
+def index_exists(cursor, index):
+    return db_object_exists(cursor, 'index', index)
 
 
 def fetch_feed(feed, etag: str = None, modified=None):
