@@ -57,6 +57,9 @@ def main():
         text = input('> Type "q" or "exit" to quit.\n')
         if text == 'q' or text == 'exit':
             stop_event.set()
+            logging.info('Stopping update thread.')
+        else:
+            logging.warning(f'Unknown command: "{text}"')
 
 
 def update_feeds_loop(db_path, feeds, interval: float, stop_event: threading.Event):
@@ -318,6 +321,8 @@ def update_feed(cursor, name, site_id):
     if not etag_or_modified:
         logging.warning(f'"{name}" does not support etag or last modified date.')
 
+    new_article = False
+
     for article in feed.entries:
         article_id = article.id
 
@@ -343,6 +348,12 @@ def update_feed(cursor, name, site_id):
         logging.info(f'Inserting "{name}" article "{title}".')
 
         insert_article(cursor, article_id, site_id, title, summary, link, thumbnail, published, author)
+
+        # Set flag to indicate that new articles have been inserted
+        new_article = True
+
+    if not new_article:
+        logging.info(f'No new articles for "{name}".')
 
 
 if __name__ == '__main__':
