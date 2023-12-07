@@ -36,7 +36,7 @@ TRAILING_REPLACEMENTS = [
 
 
 def main():
-    database_path, feeds_file, update_interval = parse_arguments()
+    database_path, feeds_file, update_interval, single_run = parse_arguments()
     logging.info(f'Database path set to: "{database_path}"')
 
     db_con = sqlite3.connect(database_path)
@@ -45,6 +45,15 @@ def main():
 
     feeds = initialize_feeds(db_con, feeds_file)
     logging.info(f'Monitoring sites: {list(feeds.keys())}')
+
+    # Run update once then exit
+    if single_run:
+        db_connection = sqlite3.connect(database_path)
+        logging.info('Updating feeds.')
+        success = update_feeds(db_connection, feeds)
+        log_update_feeds(db_connection, success)
+        logging.info('Updating feeds complete, exiting...')
+        return
 
     stop_event = threading.Event()
     update_thread = threading.Thread(target=update_feeds_loop, args=(database_path, feeds, update_interval, stop_event))
@@ -77,6 +86,7 @@ def parse_arguments():
                         choices=['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG'])
     parser.add_argument('-i', '--update-interval', help='Interval between checking for news feed updates in seconds.',
                         type=float, default=60 * 60)
+    parser.add_argument('--single-run', action='store_true', help='Update feeds only once, then exit.')
     parser.add_argument('feeds', help='CSV file containing on each line the feed name and feed URL.')
 
     args = parser.parse_args()
@@ -85,7 +95,7 @@ def parse_arguments():
     logging.basicConfig(level=loglevel, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info(f'Set log level to: {logging.getLevelName(loglevel)}')
 
-    return args.database_path, args.feeds, args.update_interval
+    return args.database_path, args.feeds, args.update_interval, args.single_run
 
 
 def create_tables(db_connection):
