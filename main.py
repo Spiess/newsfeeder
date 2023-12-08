@@ -264,6 +264,10 @@ def try_get_thumbnail(article):
 
 
 def remove_html_tags(text):
+    # If there are no HTML tags in the original text, it is possible that the tags are HTML escaped
+    if not HTML_TAG_REGEX.search(text):
+        # Unescape HTML before any substitutions
+        text = html.unescape(text)
     # Remove figure tags
     text = HTML_FIGURE_REGEX.sub('', text)
     # Replace change of p environment with space
