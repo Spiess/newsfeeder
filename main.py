@@ -30,9 +30,10 @@ TRAILING_REPLACEMENTS = [
     (re.compile(r' View the full site RELATED LINKS:.*$'), ''),
     (re.compile(r' Continue reading .*$'), ''),
     (re.compile(r' Read more$'), ''),
-    (re.compile(r' The post .* appeared first on Nintendojo.$'), ''),  # Nintendojo
+    (re.compile(r' The post .* appeared first on Nintendojo\.$'), ''),  # Nintendojo
     (re.compile(r' \[…]$'), '...'),
-    (re.compile(r'Read article >$'), '...')  # NVIDIA Blog
+    (re.compile(r'Read article >$'), '...'),  # NVIDIA Blog
+    (re.compile(r'\. Read the full article on GamingOnLinux\.'), ''),  # GamingOnLinux
 ]
 
 
