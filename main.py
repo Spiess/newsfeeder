@@ -343,7 +343,8 @@ def update_feed(cursor, name, site_id):
         if article_exists(cursor, article_id):
             continue
 
-        title = article.title
+        # Unescape HTML entities from title (required for Polygon)
+        title = html.unescape(article.title)
         link = article.link
         summary = remove_trailing_message(remove_extra_spaces(remove_html_tags(article.summary)))
 
