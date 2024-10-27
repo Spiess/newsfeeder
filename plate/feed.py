@@ -41,7 +41,7 @@ def format_time_delta(delta):
 @bp.route("/<sites>")
 @bp.route("/<sites>/<int:n_articles>")
 @bp.route("/<sites>/<int:n_articles>/<int:last_article_published>")
-def get_feed(sites='all', n_articles=35, last_article_published=None):
+def get_feed(sites='all', n_articles=35, last_article_published=None, include_images=True):
     articles = retrieve_articles(sites, n_articles, last_article_published)
     current_time = time.time()
 
@@ -65,4 +65,12 @@ def get_feed(sites='all', n_articles=35, last_article_published=None):
             else:
                 article['author_email'] = None
 
-    return render_template('base.html', articles=articles, sites=sites, n_articles=n_articles, last=last)
+    return render_template('base.html', articles=articles, sites=sites, n_articles=n_articles, last=last, include_images=include_images)
+
+
+@bp.route('/text')
+@bp.route("/text/<sites>")
+@bp.route("/text/<sites>/<int:n_articles>")
+@bp.route("/text/<sites>/<int:n_articles>/<int:last_article_published>")
+def get_text_only_feed(sites='all', n_articles=35, last_article_published=None):
+    return get_feed(sites, n_articles, last_article_published, include_images=False)

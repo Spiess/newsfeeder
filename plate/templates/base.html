@@ -21,7 +21,7 @@
             </a>
           </h2>
           <p>
-          {% if article['icon'] is not none %}
+          {% if article['icon'] is not none and include_images %}
             <img src="{{ article['icon'] }}" class="site-icon" alt="{{ article['site'] }} icon">
           {% endif %}
               <abbr title="{{ article['published'] }}">{{ article['published_since'] }}</abbr> ago
@@ -35,7 +35,7 @@
           {% endif %}
           </p>
         </header>
-        {% if article['thumbnail'] is not none %}
+        {% if article['thumbnail'] is not none and include_images %}
           <a href="{{ article['link'] }}" target="_blank" rel="noopener noreferrer">
             <img src="{{ article['thumbnail'] }}" alt="{{ article['title'] }}">
           </a>
@@ -47,7 +47,7 @@
   </div>
 {% endblock %}
 <h2 class="next-page">
-  <a href="{{ url_for('feed.get_feed', sites=sites, n_articles=n_articles, last_article_published=last) }}" class="link">Next page...</a>
+  <a href="{% if include_images %}{{ url_for('feed.get_feed', sites=sites, n_articles=n_articles, last_article_published=last) }}{% else %}{{ url_for('feed.get_text_only_feed', sites=sites, n_articles=n_articles, last_article_published=last) }}{% endif %}" class="link">Next page...</a>
 </h2>
 </body>
 </html>
