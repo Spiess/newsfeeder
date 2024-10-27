@@ -1,6 +1,6 @@
 import re
 import time
-from datetime import datetime
+import datetime
 
 from flask import Blueprint, render_template
 
@@ -50,7 +50,7 @@ def get_feed(sites='all', n_articles=35, last_article_published=None):
     for article in articles:
         pub_time = article['published']
         article['published_since'] = format_time_delta(current_time - pub_time)
-        published = datetime.utcfromtimestamp(article['published'])
+        published = datetime.datetime.fromtimestamp(article['published'], datetime.UTC)
         article['published'] = published.strftime('%d.%m.%Y %H:%M (UTC)')
         summary = article['summary']
         max_length = 500
