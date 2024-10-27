@@ -50,7 +50,7 @@ def get_feed(sites='all', n_articles=35, last_article_published=None, include_im
     for article in articles:
         pub_time = article['published']
         article['published_since'] = format_time_delta(current_time - pub_time)
-        published = datetime.datetime.fromtimestamp(article['published'], datetime.UTC)
+        published = datetime.datetime.fromtimestamp(article['published'], datetime.timezone.utc)
         article['published'] = published.strftime('%d.%m.%Y %H:%M (UTC)')
         summary = article['summary']
         max_length = 500
