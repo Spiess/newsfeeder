@@ -37,6 +37,18 @@ def format_time_delta(delta):
                f'{f", {minutes_string}" if minutes > 0 else ""}'
 
 
+def split_long_words(text, max_length=16):
+    """Splits long words by inserting zero-width spaces."""
+    words = set(text.split())
+    words = {word for word in words if len(word) > max_length}
+    for word in words:
+        # Split the word into chunks of max_length
+        chunks = [word[i:i + max_length] for i in range(0, len(word), max_length)]
+        # Join the chunks with zero-width space
+        text = text.replace(word, '\u200B'.join(chunks))
+    return text
+
+
 @bp.route('/')
 @bp.route("/<sites>")
 @bp.route("/<sites>/<int:n_articles>")
@@ -56,6 +68,8 @@ def get_feed(sites='all', n_articles=35, last_article_published=None, include_im
         max_length = 500
         if len(summary) > max_length:
             article['summary'] = summary[:max_length] + '...'
+        article['title'] = split_long_words(article['title'])
+        article['summary'] = split_long_words(article['summary'], 24)
         # Author
         if article['author'] is not None:
             email_match = EMAIL_REGEX.match(article['author'])
@@ -65,7 +79,8 @@ def get_feed(sites='all', n_articles=35, last_article_published=None, include_im
             else:
                 article['author_email'] = None
 
-    return render_template('base.html', articles=articles, sites=sites, n_articles=n_articles, last=last, include_images=include_images)
+    return render_template('base.html', articles=articles, sites=sites, n_articles=n_articles, last=last,
+                           include_images=include_images)
 
 
 @bp.route('/text')
