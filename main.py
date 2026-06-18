@@ -164,11 +164,15 @@ def get_site_id(db_connection, name, feed, icon):
         icon = None
     cursor = db_connection.cursor()
     # Check if site already inserted
-    cursor.execute("SELECT id, icon FROM site WHERE name=?", (name,))
+    cursor.execute("SELECT id, feed, icon FROM site WHERE name=?", (name,))
     results = cursor.fetchall()
 
     if len(results) > 0:
-        site_id, current_icon = results[0]
+        site_id, current_feed, current_icon = results[0]
+        if current_feed != feed:
+            logging.info(f'Updating "{name}" site feed from "{current_feed}" to "{feed}"')
+            cursor.execute("UPDATE site SET feed=? WHERE id=?", (feed, site_id))
+            db_connection.commit()
         if current_icon != icon:
             logging.info(f'Updating "{name}" site icon from "{current_icon}" to "{icon}"')
             cursor.execute("UPDATE site SET icon=? WHERE id=?", (icon, site_id))
